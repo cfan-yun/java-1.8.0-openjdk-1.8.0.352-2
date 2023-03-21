@@ -216,12 +216,12 @@ public class ThreadLocal<T> {
      *        this thread-local.
      */
     public void set(T value) {
-        Thread t = Thread.currentThread();
-        ThreadLocalMap map = getMap(t);
+        Thread t = Thread.currentThread();//获取当前线程
+        ThreadLocalMap map = getMap(t);//传入当前线程
         if (map != null) {
             map.set(this, value);
         } else {
-            createMap(t, value);
+            createMap(t, value);//第一次set时，创建出来
         }
     }
 
@@ -251,7 +251,7 @@ public class ThreadLocal<T> {
      * @return the map
      */
     ThreadLocalMap getMap(Thread t) {
-        return t.threadLocals;
+        return t.threadLocals;//当前线程的ThreadLocal.ThreadLocalMap
     }
 
     /**
@@ -262,7 +262,7 @@ public class ThreadLocal<T> {
      * @param firstValue value for the initial entry of the map
      */
     void createMap(Thread t, T firstValue) {
-        t.threadLocals = new ThreadLocalMap(this, firstValue);
+            t.threadLocals = new ThreadLocalMap(this, firstValue);
     }
 
     /**
@@ -481,14 +481,14 @@ public class ThreadLocal<T> {
 
             Entry[] tab = table;
             int len = tab.length;
-            int i = key.threadLocalHashCode & (len-1);
+            int i = key.threadLocalHashCode & (len-1);//获取下标
 
             for (Entry e = tab[i];
                  e != null;
                  e = tab[i = nextIndex(i, len)]) {
                 ThreadLocal<?> k = e.get();
 
-                if (k == key) {
+                if (k == key) {//key相等设置值返回
                     e.value = value;
                     return;
                 }

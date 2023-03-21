@@ -548,7 +548,7 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
      * The default rejected execution handler
      */
     private static final RejectedExecutionHandler defaultHandler =
-        new AbortPolicy();
+        new AbortPolicy();//默认中止策略
 
     /**
      * Permission required for callers of shutdown and shutdownNow.
@@ -1200,7 +1200,7 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
                               TimeUnit unit,
                               BlockingQueue<Runnable> workQueue) {
         this(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue,
-             Executors.defaultThreadFactory(), defaultHandler);
+             Executors.defaultThreadFactory(), defaultHandler);//默认中止策略和默认工厂创建线程
     }
 
     /**
@@ -1300,19 +1300,19 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
      * @throws NullPointerException if {@code workQueue}
      *         or {@code threadFactory} or {@code handler} is null
      */
-    public ThreadPoolExecutor(int corePoolSize,
-                              int maximumPoolSize,
-                              long keepAliveTime,
-                              TimeUnit unit,
-                              BlockingQueue<Runnable> workQueue,
-                              ThreadFactory threadFactory,
-                              RejectedExecutionHandler handler) {
+    public ThreadPoolExecutor(int corePoolSize,         //核心线程数
+                              int maximumPoolSize,      //最大线程数
+                              long keepAliveTime,         //非核心线程的闲置超时时间，超过这个时间会被回收
+                              TimeUnit unit,                                                  //keepAliveTime 的时间单位
+                              BlockingQueue<Runnable> workQueue,                              //用来存储等待执行执行任务的队列
+                              ThreadFactory threadFactory,                                    //线程工厂
+                              RejectedExecutionHandler handler) {                             //拒绝策略
         if (corePoolSize < 0 ||
             maximumPoolSize <= 0 ||
             maximumPoolSize < corePoolSize ||
             keepAliveTime < 0)
-            throw new IllegalArgumentException();
-        if (workQueue == null || threadFactory == null || handler == null)
+            throw new IllegalArgumentException();//非法参数校验
+        if (workQueue == null || threadFactory == null || handler == null)//任务队列、线程工厂、拒绝策略非空
             throw new NullPointerException();
         this.acc = System.getSecurityManager() == null ?
                 null :
@@ -1320,7 +1320,7 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
         this.corePoolSize = corePoolSize;
         this.maximumPoolSize = maximumPoolSize;
         this.workQueue = workQueue;
-        this.keepAliveTime = unit.toNanos(keepAliveTime);
+        this.keepAliveTime = unit.toNanos(keepAliveTime);//默认是纳秒级别
         this.threadFactory = threadFactory;
         this.handler = handler;
     }

@@ -918,17 +918,17 @@ class Thread implements Runnable {
      */
     public void interrupt() {
         if (this != Thread.currentThread())
-            checkAccess();
+            checkAccess();//检查有没有权限进行中断，只能是自己中断自己
 
-        synchronized (blockerLock) {
+        synchronized (blockerLock) {//blockerLock 就是操作kerLock 的锁 IO操作才会执行这里
             Interruptible b = blocker;
-            if (b != null) {
+            if (b != null) {//可中断IO在开始执行IO前会设置blocker ,正常情况下为null
                 interrupt0();           // Just to set the interrupt flag
-                b.interrupt(this);
+                b.interrupt(this);//调用其 interrupt方法
                 return;
             }
         }
-        interrupt0();
+        interrupt0();//没有IO执行这里
     }
 
     /**
@@ -1244,7 +1244,7 @@ class Thread implements Runnable {
      *          cleared when this exception is thrown.
      */
     public final synchronized void join(long millis)
-    throws InterruptedException {
+    throws InterruptedException {//此处的锁对象是调用join方法的线程thread1作为锁对象 -》 wait 是启动thread1的线程main等待 -》thread1退出时，以thread1做为锁对象加锁、唤醒、解锁，唤醒了main线程
         long base = System.currentTimeMillis();
         long now = 0;
 
@@ -1253,12 +1253,12 @@ class Thread implements Runnable {
         }
 
         if (millis == 0) {
-            while (isAlive()) {
-                wait(0);
+            while (isAlive()) { //isAlive这是一个本地方法，这个方法是由调用join方法得线程t1调用的。
+                wait(0);//main线程无限期等待或启动线程t1的线程等待
             }
         } else {
             while (isAlive()) {
-                long delay = millis - now;
+                long delay = millis - now;//now初始为0
                 if (delay <= 0) {
                     break;
                 }
