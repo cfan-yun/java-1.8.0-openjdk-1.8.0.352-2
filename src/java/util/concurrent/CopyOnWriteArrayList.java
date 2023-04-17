@@ -435,11 +435,11 @@ public class CopyOnWriteArrayList<E>
         final ReentrantLock lock = this.lock;
         lock.lock();
         try {
-            Object[] elements = getArray();
+            Object[] elements = getArray();//获取到数组对象 array类型是transient volatile 可以保证其他线程看得到
             int len = elements.length;
-            Object[] newElements = Arrays.copyOf(elements, len + 1);
+            Object[] newElements = Arrays.copyOf(elements, len + 1);//拷贝一个数组
             newElements[len] = e;
-            setArray(newElements);
+            setArray(newElements);//设置当前数组为新的数组元素
             return true;
         } finally {
             lock.unlock();

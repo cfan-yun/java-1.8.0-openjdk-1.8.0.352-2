@@ -91,7 +91,7 @@ class DirectByteBuffer
                 // Paranoia
                 return;
             }
-            unsafe.freeMemory(address);
+            unsafe.freeMemory(address);//内存释放在这里
             address = 0;
             Bits.unreserveMemory(size, capacity);
         }
@@ -124,12 +124,12 @@ class DirectByteBuffer
 
         long base = 0;
         try {
-            base = unsafe.allocateMemory(size);
+            base = unsafe.allocateMemory(size);//开辟内存
         } catch (OutOfMemoryError x) {
             Bits.unreserveMemory(size, cap);
             throw x;
         }
-        unsafe.setMemory(base, size, (byte) 0);
+        unsafe.setMemory(base, size, (byte) 0);//初始化内存，用0初始化
         if (pa && (base % ps != 0)) {
             // Round up to page boundary
             address = base + ps - (base & (ps - 1));

@@ -86,7 +86,7 @@ public final class Unsafe {
     @CallerSensitive
     public static Unsafe getUnsafe() {
         Class<?> caller = Reflection.getCallerClass();
-        if (!VM.isSystemDomainLoader(caller.getClassLoader()))
+        if (!VM.isSystemDomainLoader(caller.getClassLoader()))//unsafe的类加载器是Bootstrap
             throw new SecurityException("Unsafe");
         return theUnsafe;
     }
@@ -478,7 +478,7 @@ public final class Unsafe {
      * @see #getByte(long)
      * @see #putByte(long, byte)
      */
-    public native long allocateMemory(long bytes);
+    public native long allocateMemory(long bytes);//分配指定大小的内存，堆外内存，不受gc管理
 
     /**
      * Resizes a new block of native memory, to the given size in bytes.  The
